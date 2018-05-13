@@ -36,7 +36,7 @@ public class JobTest : MonoBehaviour {
     private JobHandle _positionUpdateJobHandle;
 
     /// <summary>
-    /// 更新ジョブ
+    /// 速度更新ジョブ
     /// </summary>
     private struct VelocityUpdateJob : IJobParallelForTransform {
         public NativeArray<Vector3> velocity;
@@ -78,6 +78,9 @@ public class JobTest : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
     private void Start() {
         _objectArray = AddObject();
         _transformArray = new Transform[_count];
@@ -96,6 +99,9 @@ public class JobTest : MonoBehaviour {
         _transformsAccessArray = new TransformAccessArray(_transformArray);
     }
 
+    /// <summary>
+    /// フレーム更新
+    /// </summary>
     private void Update() {
         _velocitUpdateJob = new VelocityUpdateJob {
             velocity = _velocityArray,
@@ -113,36 +119,46 @@ public class JobTest : MonoBehaviour {
         _positionUpdateJobHandle = _positionUpdateJob.Schedule(_transformsAccessArray, _velocityUpdateJobHandle);
     }
 
+    /// <summary>
+    /// ジョブ終了
+    /// </summary>
     private void LateUpdate() {
         _velocityUpdateJobHandle.Complete();
         _positionUpdateJobHandle.Complete();
     }
 
+    /// <summary>
+    /// 後処理
+    /// </summary>
     private void OnDestroy() {
         _velocityArray.Dispose();
         _transformsAccessArray.Dispose();
     }
 
+    /// <summary>
+    /// 指定された個数のオブジェクトを生成
+    /// </summary>
+    /// <returns></returns>
     private GameObject[] AddObject() {
-        var cubes = new GameObject[_count];
-        var cubeToCopy = MakeStrippedCube();
+        var objs = new GameObject[_count];
+        var objToCopy = CreateObject();
 
         for ( int i = 0 ; i < _count ; i++ ) {
-            var cube = GameObject.Instantiate(cubeToCopy);
+            var cube = GameObject.Instantiate(objToCopy);
             //cube.transform.position = UnityEngine.Random.insideUnitSphere * _radius;
             cube.transform.position = new Vector3(
                 UnityEngine.Random.Range(_minPos.x, _maxPos.x),
                 UnityEngine.Random.Range(_minPos.y, _maxPos.y),
                 UnityEngine.Random.Range(_minPos.z, _maxPos.z));
-            cubes[i] = cube;
+            objs[i] = cube;
         }
 
-        GameObject.Destroy(cubeToCopy);
+        GameObject.Destroy(objToCopy);
 
-        return cubes;
+        return objs;
     }
 
-    public static GameObject MakeStrippedCube() {
+    public static GameObject CreateObject() {
         var cube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
         //turn off shadows entirely
