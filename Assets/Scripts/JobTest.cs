@@ -6,6 +6,7 @@ using System;
 
 /// <summary>
 /// C# Job Systemテスト用
+/// 参考 : https://github.com/stella3d/job-system-cookbook
 /// </summary>
 public class JobTest : MonoBehaviour {
     [SerializeField]
@@ -145,7 +146,6 @@ public class JobTest : MonoBehaviour {
 
         for ( int i = 0 ; i < _count ; i++ ) {
             var cube = GameObject.Instantiate(objToCopy);
-            //cube.transform.position = UnityEngine.Random.insideUnitSphere * _radius;
             cube.transform.position = new Vector3(
                 UnityEngine.Random.Range(_minPos.x, _maxPos.x),
                 UnityEngine.Random.Range(_minPos.y, _maxPos.y),
