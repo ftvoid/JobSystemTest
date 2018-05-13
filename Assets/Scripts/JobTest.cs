@@ -82,7 +82,7 @@ public class JobTest : MonoBehaviour {
     /// 初期化
     /// </summary>
     private void Start() {
-        _objectArray = AddObject();
+        _objectArray = CreateObjects();
         _transformArray = new Transform[_count];
         _velocityArray = new NativeArray<Vector3>(_count, Allocator.Persistent);
 
@@ -139,9 +139,9 @@ public class JobTest : MonoBehaviour {
     /// 指定された個数のオブジェクトを生成
     /// </summary>
     /// <returns></returns>
-    private GameObject[] AddObject() {
+    private GameObject[] CreateObjects() {
         var objs = new GameObject[_count];
-        var objToCopy = CreateObject();
+        var objToCopy = CreateTemplate();
 
         for ( int i = 0 ; i < _count ; i++ ) {
             var cube = GameObject.Instantiate(objToCopy);
@@ -158,18 +158,22 @@ public class JobTest : MonoBehaviour {
         return objs;
     }
 
-    public static GameObject CreateObject() {
-        var cube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+    /// <summary>
+    /// オブジェクト生成
+    /// </summary>
+    /// <returns></returns>
+    public static GameObject CreateTemplate() {
+        var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
         //turn off shadows entirely
-        var renderer = cube.GetComponent<MeshRenderer>();
+        var renderer = obj.GetComponent<MeshRenderer>();
         renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         renderer.receiveShadows = false;
 
         // disable collision
-        var collider = cube.GetComponent<Collider>();
+        var collider = obj.GetComponent<Collider>();
         collider.enabled = false;
 
-        return cube;
+        return obj;
     }
 }
