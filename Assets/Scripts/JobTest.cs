@@ -30,7 +30,7 @@ public class JobTest : MonoBehaviour {
     private NativeArray<Vector3> _velocityArray;
     TransformAccessArray _transformsAccessArray;
 
-    private VelocityUpdateJob _velocitUpdateJob;
+    private VelocityUpdateJob _velocityUpdateJob;
     private PositionUpdateJob _positionUpdateJob;
 
     private JobHandle _velocityUpdateJobHandle;
@@ -104,7 +104,7 @@ public class JobTest : MonoBehaviour {
     /// フレーム更新
     /// </summary>
     private void Update() {
-        _velocitUpdateJob = new VelocityUpdateJob {
+        _velocityUpdateJob = new VelocityUpdateJob {
             velocity = _velocityArray,
             deltaTime = Time.deltaTime,
             minPos = _minPos,
@@ -116,7 +116,7 @@ public class JobTest : MonoBehaviour {
             deltaTime = Time.deltaTime,
         };
 
-        _velocityUpdateJobHandle = _velocitUpdateJob.Schedule(_transformsAccessArray);
+        _velocityUpdateJobHandle = _velocityUpdateJob.Schedule(_transformsAccessArray);
         _positionUpdateJobHandle = _positionUpdateJob.Schedule(_transformsAccessArray, _velocityUpdateJobHandle);
     }
 
